@@ -18,7 +18,6 @@ namespace CityInfo.API.Controllers
         [HttpGet]
         public ActionResult<PointOfInterestDto> GetPointsOfInterest(int cityId)
         {
-            throw new ArgumentException("EXception Sample");
             try
             {
               
