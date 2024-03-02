@@ -7,7 +7,7 @@ namespace CityInfo.API.Services
     public class CityInfoRepository : ICityInfoRepository
     {
         private readonly CityInfoContext _cityInfoContext;
-
+        
         public CityInfoRepository(CityInfoContext cityInfoContext)
         {
             _cityInfoContext = cityInfoContext?? throw new ArgumentNullException(nameof(cityInfoContext));
@@ -28,7 +28,10 @@ namespace CityInfo.API.Services
                 return await _cityInfoContext.Cities.Where(c => c.Id == cityId).FirstOrDefaultAsync();  
             }
         }
-
+        public async Task<bool> CityExistAsync(int cityId)
+        {
+            return await _cityInfoContext.Cities.AnyAsync(p => p.Id == cityId);
+        }
         public async Task<IEnumerable<PointOfInterest>> GetPointOfInterestForCityAsync(int cityId)
         {
            return await _cityInfoContext.PointOfInterests.Where(p => p.CityId == cityId).ToListAsync();

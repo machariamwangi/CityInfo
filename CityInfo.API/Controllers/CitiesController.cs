@@ -28,7 +28,7 @@ namespace CityInfo.API.Controllers
 
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<CityDto>> GetCity(int id, bool includePointsOfInterest = false)
+        public async Task<IActionResult> GetCity(int id, bool includePointsOfInterest = false)
         {
             var response = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
             if (response == null)
@@ -39,7 +39,7 @@ namespace CityInfo.API.Controllers
             {
                 return Ok(_mapper.Map<CityDto>(response));
             }
-            return Ok(_mapper.Map<CityWithoutPointsOfInterestDTO    >(response));
+            return Ok(_mapper.Map<CityWithoutPointsOfInterestDTO>(response));
 
         }
     }
