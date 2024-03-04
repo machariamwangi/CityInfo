@@ -16,7 +16,7 @@ namespace CityInfo.API.Services
         {
             return await _cityInfoContext.Cities.OrderBy(c => c.Name).ToListAsync();
         }
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery)
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
             if (string.IsNullOrEmpty(name) && string.IsNullOrWhiteSpace(searchQuery))
             {
@@ -24,6 +24,7 @@ namespace CityInfo.API.Services
             }
 
             var collection  = _cityInfoContext.Cities as IQueryable<City>;
+
             if (!string.IsNullOrWhiteSpace(name))
             {
                 name = name.Trim();
@@ -37,7 +38,10 @@ namespace CityInfo.API.Services
                     (a.Description != null && a.Description.Contains(searchQuery)));
             }
 
-            return await collection.OrderBy(c => c.Name).ToListAsync(); ;
+            return await collection.OrderBy(c => c.Name)
+                .Skip(pageSize *(pageNumber-1))
+                .Take(pageSize)
+                .ToListAsync(); ;
             //name = name.Trim();
             //return await _cityInfoContext.Cities
             //    .Where(c => c.Name == name)
