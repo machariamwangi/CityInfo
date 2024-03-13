@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using CityInfo.API.DbContexts;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
@@ -55,6 +56,14 @@ builder.Services.AddAuthentication("Bearer")
         };
     }
     );
+
+builder.Services.AddApiVersioning(action =>
+{
+    action.ReportApiVersions = true;
+    action.AssumeDefaultVersionWhenUnspecified = true;
+    action.DefaultApiVersion = new ApiVersion(1, 0);
+}).AddMvc();
+
 
 var app = builder.Build();
 
