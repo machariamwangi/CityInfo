@@ -27,7 +27,7 @@ namespace CityInfo.API.Controllers
                 pageSize = maxCitiesPageSize;
             }
             //var cityEntities  =   await _cityInfoRepository.GetCitiesAsync();
-            var cityEntities  =   await _cityInfoRepository.GetCitiesAsync(name, searchQuery, pageNumber, pageSize);
+            var ( cityEntities, paganitionMetadata  ) =   await _cityInfoRepository.GetCitiesAsync(name, searchQuery, pageNumber, pageSize);
             
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDTO>>(cityEntities));
 

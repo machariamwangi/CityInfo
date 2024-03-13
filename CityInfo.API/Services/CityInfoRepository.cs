@@ -16,12 +16,9 @@ namespace CityInfo.API.Services
         {
             return await _cityInfoContext.Cities.OrderBy(c => c.Name).ToListAsync();
         }
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<City>, PaginationMetadata)> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
-            if (string.IsNullOrEmpty(name) && string.IsNullOrWhiteSpace(searchQuery))
-            {
-                return await GetCitiesAsync();
-            }
+           
 
             var collection  = _cityInfoContext.Cities as IQueryable<City>;
 
@@ -36,16 +33,18 @@ namespace CityInfo.API.Services
                searchQuery = searchQuery.Trim();
                 collection = collection.Where(a => a.Name.Contains(searchQuery) ||
                     (a.Description != null && a.Description.Contains(searchQuery)));
-            }
+            } 
 
-            return await collection.OrderBy(c => c.Name)
+            var totalItemCount =  await collection.CountAsync();
+            var paginationMetaData = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
+
+
+            var collectionToReturn =  await collection.OrderBy(c => c.Name)
                 .Skip(pageSize *(pageNumber-1))
                 .Take(pageSize)
                 .ToListAsync(); ;
-            //name = name.Trim();
-            //return await _cityInfoContext.Cities
-            //    .Where(c => c.Name == name)
-            //    .OrderBy(c => c.Name).ToListAsync();
+          
+            return (collectionToReturn, paginationMetaData);
         }
         public async Task<City?> GetCityAsync(int cityId, bool icludePointOfInterest)
         {
